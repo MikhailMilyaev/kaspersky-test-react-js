@@ -9,11 +9,15 @@
   font-weight: 700;
 }
 
-.users__search {
-  width: 100%;
-  max-width: 100%;
-  padding: 12px 16px;
+.users__controls {
+  display: flex;
+  gap: 12px;
   margin-bottom: 24px;
+}
+
+.users__search {
+  flex: 1;
+  padding: 12px 16px;
   border: 1px solid #ced4da;
   border-radius: 6px;
   font-size: 1rem;
@@ -23,6 +27,22 @@
 
 .users__search:focus {
   border-color: var(--primary-color);
+}
+
+.users__add-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.users__add-btn:hover {
+  opacity: 0.9;
 }
 
 .users__table-wrapper {
@@ -50,23 +70,22 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
-  white-space: nowrap;
 }
 
 .users__table-td {
   padding: 14px 16px;
   border-bottom: 1px solid #f1f1f1;
   font-size: 0.95rem;
-  vertical-align: middle;
 }
 
 .users__link {
   color: var(--primary-color);
   font-weight: 500;
+  text-decoration: none;
 }
 
 .users__link:hover {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 .users__group-badge {
@@ -77,12 +96,24 @@
   color: #495057;
 }
 
+.users__delete-btn {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+@media (max-width: 768px) {
+  .users__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 @media (min-width: 768px) {
   .users__title {
     font-size: 2rem;
-  }
-  
-  .users__search {
-    max-width: 400px;
   }
 }
