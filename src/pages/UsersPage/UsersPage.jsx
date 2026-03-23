@@ -10,13 +10,16 @@ const UsersPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'fullName', direction: 'asc' });
+  const [highlightedUserId, setHighlightedUserId] = useState(null);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  useEffect(() => {
-    if (users.length === 0) {
+useEffect(() => {
+    const isInitialized = localStorage.getItem('kaspersky_data_loaded');
+
+    if (!isInitialized) {
       setIsLoading(true);
       fetch('/db.json')
         .then(res => res.json())
@@ -24,11 +27,12 @@ const UsersPage = () => {
           setTimeout(() => {
             setUsers(data.users);
             setIsLoading(false);
+            localStorage.setItem('kaspersky_data_loaded', 'true');
           }, 800);
         })
         .catch(() => setIsLoading(false));
     }
-  }, [users.length, setUsers]);
+  }, [setUsers]); 
 
   const requestSort = (key) => {
     setSortConfig(prev => ({
@@ -57,10 +61,16 @@ const UsersPage = () => {
   }, [users, searchTerm, sortConfig]);
 
   const handleAddUser = (userData) => {
-    const newUser = { ...userData, id: crypto.randomUUID() };
-    setUsers([newUser, ...users]);
-    setIsAddModalOpen(false);
-  };
+      const newUser = { ...userData, id: crypto.randomUUID() };
+      setUsers([newUser, ...users]);
+      setIsAddModalOpen(false);
+      
+      setHighlightedUserId(newUser.id);
+      
+      setTimeout(() => {
+        setHighlightedUserId(null);
+      }, 2000); 
+    };
 
   const openDeleteModal = (user) => {
     setUserToDelete(user);
@@ -112,7 +122,7 @@ const UsersPage = () => {
               <tbody>
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map(user => (
-                    <tr key={user.id} className={styles['users__table-tr']}>
+                    <tr key={user.id} className={`${styles['users__table-tr']} ${highlightedUserId === user.id ? styles['users__table-tr--highlight'] : ''}`}>
                       <td className={styles['users__table-td']}>{user.fullName}</td>
                       <td className={styles['users__table-td']}>{user.account}</td>
                       <td className={styles['users__table-td']}>

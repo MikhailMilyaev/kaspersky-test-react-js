@@ -45,6 +45,15 @@
   background-color: #008f70;
 }
 
+.users__table-tr--highlight {
+  background-color: rgba(0, 168, 132, 0.15);
+  transition: background-color 0.3s ease;
+}
+
+.users__table-tr {
+  transition: background-color 0.8s ease;
+}
+
 .users__table-wrapper {
   width: 100%;
   overflow-x: auto;
