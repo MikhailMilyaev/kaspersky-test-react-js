@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const UserContext = createContext();
 
@@ -31,6 +32,7 @@ export const UserProvider = ({ children }) => {
         .catch(err => {
           console.error("Ошибка загрузки:", err);
           setIsLoading(false);
+          toast.error("Не удалось загрузить начальные данные");
         });
     }
   }, []);
@@ -38,11 +40,19 @@ export const UserProvider = ({ children }) => {
   const addUser = (userData) => {
     const newUser = { ...userData, id: crypto.randomUUID() };
     setUsers(prev => [newUser, ...prev]);
+    
+    toast.success(`Пользователь ${userData.fullName} добавлен!`);
+    
     return newUser.id;
   };
 
   const deleteUser = (id) => {
+    const userToDelete = users.find(u => u.id === id);
     setUsers(prev => prev.filter(user => user.id !== id));
+    
+    if (userToDelete) {
+      toast.info(`Пользователь ${userToDelete.fullName} удален`);
+    }
   };
 
   return (
