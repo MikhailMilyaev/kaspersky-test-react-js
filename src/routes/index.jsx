@@ -1,5 +1,5 @@
 import WelcomePage from '../pages/WelcomePage/WelcomePage';
-import UsersPage from '../pages/UsersPage';
+import UsersPage from '../pages/UsersPage/UsersPage';
 import GroupsPage from '../pages/GroupsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import { PATHS } from './paths';

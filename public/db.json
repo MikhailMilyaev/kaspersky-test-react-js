@@ -3,6 +3,12 @@
     { "id": 1, "fullName": "Илья Викторович Осипов", "account": "company/osipov_iv", "email": "osipov@company.ru", "group": "Руководство", "phone": "+7(800)555-35-35" },
     { "id": 2, "fullName": "Дмитрий Альбертович Крылов", "account": "company/krylov_da", "email": "krylov@company.ru", "group": "Без группы", "phone": "+7(900)123-45-67" },
     { "id": 3, "fullName": "Федор Иванович Петров", "account": "company/petrov_fi", "email": "petrov@company.ru", "group": "Менеджеры", "phone": "+7(495)777-66-55" },
-    { "id": 4, "fullName": "Алексей Смирнов", "account": "company/smirnov_a", "email": "smirnov@company.ru", "group": "IT-отдел", "phone": "+7(999)000-11-22" }
+    { "id": 4, "fullName": "Алексей Смирнов", "account": "company/smirnov_a", "email": "smirnov@company.ru", "group": "IT-отдел", "phone": "+7(999)000-11-22" },
+    { "id": 5, "fullName": "Марина Александровна Соколова", "account": "company/sokolova_ma", "email": "sokolova@company.ru", "group": "Бухгалтерия", "phone": "+7(916)555-44-33" },
+    { "id": 6, "fullName": "Сергей Павлович Волков", "account": "company/volkov_sp", "email": "volkov@company.ru", "group": "Отдел кадров", "phone": "+7(905)222-33-44" },
+    { "id": 7, "fullName": "Елена Игоревна Морозова", "account": "company/morozova_ei", "email": "morozova@company.ru", "group": "Менеджеры", "phone": "+7(903)111-22-33" },
+    { "id": 8, "fullName": "Андрей Николаевич Кузнецов", "account": "company/kuznetsov_an", "email": "kuznetsov@company.ru", "group": "IT-отдел", "phone": "+7(926)888-77-66" },
+    { "id": 9, "fullName": "Наталья Сергеевна Попова", "account": "company/popova_ns", "email": "popova@company.ru", "group": "Без группы", "phone": "+7(910)444-55-66" },
+    { "id": 10, "fullName": "Виктор Михайлович Лебедев", "account": "company/lebedev_vm", "email": "lebedev@company.ru", "group": "Руководство", "phone": "+7(800)111-00-99" }
   ]
 }
