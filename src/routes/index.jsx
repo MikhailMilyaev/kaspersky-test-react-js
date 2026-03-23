@@ -1,4 +1,4 @@
-import WelcomePage from '../pages/WelcomePage';
+import WelcomePage from '../pages/WelcomePage/WelcomePage';
 import UsersPage from '../pages/UsersPage';
 import GroupsPage from '../pages/GroupsPage';
 import NotFoundPage from '../pages/NotFoundPage';
