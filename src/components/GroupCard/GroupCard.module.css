@@ -1,0 +1,105 @@
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #fff;
+  transition: background-color 0.2s;
+}
+
+.header:hover {
+  background-color: #f8f9fa;
+}
+
+.title {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+  margin: 0;
+  font-weight: 600;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.count {
+  background: #e6f7f3;
+  color: #00a884;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.arrow {
+  color: #adb5bd;
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+.content {
+  padding: 0 24px 24px;
+  border-top: 1px solid #f1f1f1;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.userName {
+  font-weight: 500;
+  color: #333;
+}
+
+.userRole {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.empty {
+  color: #adb5bd;
+  font-size: 0.95rem;
+  margin: 16px 0 0 0;
+  font-style: italic;
+}
