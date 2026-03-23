@@ -1,0 +1,42 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1100;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal-title { margin-bottom: 16px; font-size: 1.25rem; color: #1a1a1a; }
+.modal-text { margin-bottom: 24px; color: #666; line-height: 1.5; }
+
+.modal-actions { display: flex; gap: 12px; }
+
+.btn-cancel { 
+  flex: 1; 
+  padding: 10px; 
+  border: none; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  background: #f0f0f0; 
+  font-weight: 600; 
+}
+.btn-delete { 
+  flex: 1; 
+  padding: 10px; 
+  border: none; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  background: #dc3545; 
+  color: white; 
+  font-weight: 600; 
+}

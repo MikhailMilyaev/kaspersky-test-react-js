@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import Loader from '../../components/Loader/Loader';
 import UserModal from '../../components/UserModal/UserModal';
+import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
 import styles from './UsersPage.module.css';
 
 const UsersPage = () => {
@@ -9,9 +10,10 @@ const UsersPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'fullName', direction: 'asc' });
-  
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ fullName: '', account: '', email: '', group: 'Без группы', phone: '' });
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     if (users.length === 0) {
@@ -38,31 +40,37 @@ const UsersPage = () => {
   const filteredUsers = useMemo(() => {
     let result = [...users].filter(user =>
       user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone.includes(searchTerm)
     );
 
     result.sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+      const valA = a[sortConfig.key].toString().toLowerCase();
+      const valB = b[sortConfig.key].toString().toLowerCase();
+      
+      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
 
     return result;
   }, [users, searchTerm, sortConfig]);
 
-  const deleteUser = (id) => {
-    if (window.confirm('Удалить пользователя?')) {
-      setUsers(users.filter(u => u.id !== id));
-    }
+  const handleAddUser = (userData) => {
+    const newUser = { ...userData, id: crypto.randomUUID() };
+    setUsers([newUser, ...users]);
+    setIsAddModalOpen(false);
   };
 
-  const handleAddUser = (userData) => {
-    const newUserWithId = { 
-      ...userData, 
-      id: crypto.randomUUID() 
-    };
-    setUsers([newUserWithId, ...users]);
-    setIsModalOpen(false);
+  const openDeleteModal = (user) => {
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setUsers(users.filter(u => u.id !== userToDelete.id));
+    setIsDeleteModalOpen(false);
+    setUserToDelete(null);
   };
 
   return (
@@ -73,13 +81,13 @@ const UsersPage = () => {
         <div className={styles['users__controls']}>
           <input
             type="text"
-            placeholder="Поиск по имени или email..."
+            placeholder="Поиск по имени, email или телефону..."
             className={styles['users__search']}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button 
-            onClick={() => setIsModalOpen(true)} 
+            onClick={() => setIsAddModalOpen(true)} 
             className={styles['users__add-btn']}
           >
             Добавить пользователя
@@ -98,7 +106,7 @@ const UsersPage = () => {
                   <th className={styles['users__table-th']} onClick={() => requestSort('email')}>Email</th>
                   <th className={styles['users__table-th']} onClick={() => requestSort('group')}>Группа</th>
                   <th className={styles['users__table-th']} onClick={() => requestSort('phone')}>Телефон</th>
-                  <th className={styles['users__table-th']}>Действия</th>
+                  <th className={`${styles['users__table-th']} ${styles['users__table-th--actions']}`}>Действия</th>
                 </tr>
               </thead>
               <tbody>
@@ -116,14 +124,20 @@ const UsersPage = () => {
                       <td className={styles['users__table-td']}>
                         <a href={`tel:${user.phone.replace(/\D/g, '')}`} className={styles['users__link']}>{user.phone}</a>
                       </td>
-                      <td className={styles['users__table-td']}>
-                        <button onClick={() => deleteUser(user.id)} className={styles['users__delete-btn']}>✕</button>
+                      <td className={`${styles['users__table-td']} ${styles['users__table-td--actions']}`}>
+                        <button 
+                          onClick={() => openDeleteModal(user)} 
+                          className={styles['users__delete-btn']}
+                          title="Удалить"
+                        >
+                          ✕
+                        </button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Пользователи не найдены</td>
+                    <td colSpan="6" className={styles['users__no-data']}>Пользователи не найдены</td>
                   </tr>
                 )}
               </tbody>
@@ -132,11 +146,16 @@ const UsersPage = () => {
         )}
 
         <UserModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
+          isOpen={isAddModalOpen} 
+          onClose={() => setIsAddModalOpen(false)} 
           onSave={handleAddUser}
-          newUser={newUser}
-          setNewUser={setNewUser}
+        />
+
+        <DeleteConfirmModal 
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          userName={userToDelete?.fullName}
         />
       </div>
     </div>
