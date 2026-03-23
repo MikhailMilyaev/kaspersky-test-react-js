@@ -1,7 +1,14 @@
+import { Routes, Route } from 'react-router-dom';
+import { publicRoutes } from './routes/index';
+
 const App = () => {
   return (
-      <h1>Hi Kaspersky!</h1>
-  )
+      <Routes>
+        {publicRoutes.map(({ path, element }) => (
+          <Route key={path} path={path} element={element} />
+        ))}
+      </Routes>
+  );
 }
 
-export default App
+export default App;
