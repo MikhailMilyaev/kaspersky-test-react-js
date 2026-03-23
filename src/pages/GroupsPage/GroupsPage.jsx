@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useUsers } from '../../context/UserContext';
 import GroupSelect from '../../components/GroupSelect/GroupSelect';
 import GroupUsersList from '../../components/GroupUsersList/GroupUsersList';
+import Loader from '../../components/Loader/Loader';
 import styles from './GroupsPage.module.css';
 
 const DEFAULT_GROUPS = [
@@ -14,7 +15,7 @@ const DEFAULT_GROUPS = [
 ];
 
 const GroupsPage = () => {
-  const [users] = useLocalStorage('kaspersky_users', []);
+  const { users, isLoading } = useUsers();
   const [selectedGroup, setSelectedGroup] = useState('Все группы');
 
   const availableGroups = useMemo(() => {
@@ -31,6 +32,8 @@ const GroupsPage = () => {
     if (selectedGroup === 'Все группы') return users;
     return users.filter(user => user.group === selectedGroup);
   }, [users, selectedGroup]);
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles['groups-page']}>

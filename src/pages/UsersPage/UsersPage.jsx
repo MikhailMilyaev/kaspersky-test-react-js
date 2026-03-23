@@ -1,38 +1,22 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useState, useMemo } from 'react';
+import { useUsers } from '../../context/UserContext';
+import { useDebounce } from '../../hooks/useDebounce';
 import Loader from '../../components/Loader/Loader';
 import UserModal from '../../components/UserModal/UserModal';
 import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
 import styles from './UsersPage.module.css';
 
 const UsersPage = () => {
-  const [users, setUsers] = useLocalStorage('kaspersky_users', []);
-  const [isLoading, setIsLoading] = useState(false);
+  const { users, isLoading, addUser, deleteUser } = useUsers();
+  
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [sortConfig, setSortConfig] = useState({ key: 'fullName', direction: 'asc' });
   const [highlightedUserId, setHighlightedUserId] = useState(null);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-
-useEffect(() => {
-    const isInitialized = localStorage.getItem('kaspersky_data_loaded');
-
-    if (!isInitialized) {
-      setIsLoading(true);
-      fetch('/db.json')
-        .then(res => res.json())
-        .then(data => {
-          setTimeout(() => {
-            setUsers(data.users);
-            setIsLoading(false);
-            localStorage.setItem('kaspersky_data_loaded', 'true');
-          }, 800);
-        })
-        .catch(() => setIsLoading(false));
-    }
-  }, [setUsers]); 
 
   const requestSort = (key) => {
     setSortConfig(prev => ({
@@ -43,14 +27,14 @@ useEffect(() => {
 
   const filteredUsers = useMemo(() => {
     let result = [...users].filter(user =>
-      user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.includes(searchTerm)
+      user.fullName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      user.phone.includes(debouncedSearchTerm)
     );
 
     result.sort((a, b) => {
-      const valA = a[sortConfig.key].toString().toLowerCase();
-      const valB = b[sortConfig.key].toString().toLowerCase();
+      const valA = a[sortConfig.key]?.toString().toLowerCase() || '';
+      const valB = b[sortConfig.key]?.toString().toLowerCase() || '';
       
       if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
       if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
@@ -58,19 +42,15 @@ useEffect(() => {
     });
 
     return result;
-  }, [users, searchTerm, sortConfig]);
+  }, [users, debouncedSearchTerm, sortConfig]);
 
   const handleAddUser = (userData) => {
-      const newUser = { ...userData, id: crypto.randomUUID() };
-      setUsers([newUser, ...users]);
-      setIsAddModalOpen(false);
-      
-      setHighlightedUserId(newUser.id);
-      
-      setTimeout(() => {
-        setHighlightedUserId(null);
-      }, 2000); 
-    };
+    const newId = addUser(userData);
+    setIsAddModalOpen(false);
+    
+    setHighlightedUserId(newId);
+    setTimeout(() => setHighlightedUserId(null), 2000);
+  };
 
   const openDeleteModal = (user) => {
     setUserToDelete(user);
@@ -78,7 +58,7 @@ useEffect(() => {
   };
 
   const handleConfirmDelete = () => {
-    setUsers(users.filter(u => u.id !== userToDelete.id));
+    deleteUser(userToDelete.id);
     setIsDeleteModalOpen(false);
     setUserToDelete(null);
   };
@@ -112,7 +92,9 @@ useEffect(() => {
                   <th className={styles['users__table-th']} onClick={() => requestSort('fullName')}>
                     Имя {sortConfig.key === 'fullName' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className={styles['users__table-th']} onClick={() => requestSort('account')}>Аккаунт</th>
+                  <th className={styles['users__table-th']} onClick={() => requestSort('account')}>
+                    Аккаунт {sortConfig.key === 'account' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
                   <th className={styles['users__table-th']} onClick={() => requestSort('email')}>Email</th>
                   <th className={styles['users__table-th']} onClick={() => requestSort('group')}>Группа</th>
                   <th className={styles['users__table-th']} onClick={() => requestSort('phone')}>Телефон</th>
@@ -122,7 +104,10 @@ useEffect(() => {
               <tbody>
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map(user => (
-                    <tr key={user.id} className={`${styles['users__table-tr']} ${highlightedUserId === user.id ? styles['users__table-tr--highlight'] : ''}`}>
+                    <tr 
+                      key={user.id} 
+                      className={`${styles['users__table-tr']} ${highlightedUserId === user.id ? styles['users__table-tr--highlight'] : ''}`}
+                    >
                       <td className={styles['users__table-td']}>{user.fullName}</td>
                       <td className={styles['users__table-td']}>{user.account}</td>
                       <td className={styles['users__table-td']}>
@@ -138,7 +123,6 @@ useEffect(() => {
                         <button 
                           onClick={() => openDeleteModal(user)} 
                           className={styles['users__delete-btn']}
-                          title="Удалить"
                         >
                           ✕
                         </button>
@@ -147,7 +131,9 @@ useEffect(() => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className={styles['users__no-data']}>Пользователи не найдены</td>
+                    <td colSpan="6" className={styles['users__no-data']}>
+                      {searchTerm ? 'Ничего не найдено' : 'Список пуст'}
+                    </td>
                   </tr>
                 )}
               </tbody>
