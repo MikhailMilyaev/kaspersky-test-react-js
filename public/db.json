@@ -1,0 +1,8 @@
+{
+  "users": [
+    { "id": 1, "fullName": "Илья Викторович Осипов", "account": "company/osipov_iv", "email": "osipov@company.ru", "group": "Руководство", "phone": "+7(800)555-35-35" },
+    { "id": 2, "fullName": "Дмитрий Альбертович Крылов", "account": "company/krylov_da", "email": "krylov@company.ru", "group": "Без группы", "phone": "+7(900)123-45-67" },
+    { "id": 3, "fullName": "Федор Иванович Петров", "account": "company/petrov_fi", "email": "petrov@company.ru", "group": "Менеджеры", "phone": "+7(495)777-66-55" },
+    { "id": 4, "fullName": "Алексей Смирнов", "account": "company/smirnov_a", "email": "smirnov@company.ru", "group": "IT-отдел", "phone": "+7(999)000-11-22" }
+  ]
+}
