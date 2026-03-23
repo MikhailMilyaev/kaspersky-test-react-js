@@ -4,22 +4,26 @@ import GroupSelect from '../../components/GroupSelect/GroupSelect';
 import GroupUsersList from '../../components/GroupUsersList/GroupUsersList';
 import styles from './GroupsPage.module.css';
 
+const DEFAULT_GROUPS = [
+  'Без группы',
+  'Руководство',
+  'IT-отдел',
+  'Менеджеры',
+  'Бухгалтерия',
+  'Отдел кадров'
+];
+
 const GroupsPage = () => {
   const [users] = useLocalStorage('kaspersky_users', []);
   const [selectedGroup, setSelectedGroup] = useState('Все группы');
 
   const availableGroups = useMemo(() => {
     const userGroups = users.map(u => u.group);
-    
     const uniqueGroups = new Set([
       'Все группы',
-      'Руководство', 
-      'IT-отдел', 
-      'Менеджеры', 
-      'Без группы',
+      ...DEFAULT_GROUPS,
       ...userGroups
     ]);
-
     return Array.from(uniqueGroups);
   }, [users]);
 
